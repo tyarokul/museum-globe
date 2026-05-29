@@ -1,11 +1,20 @@
-<!DOCTYPE html> 
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Globe</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Museum Globe</title>
+
 <style>
-  body { margin:0; overflow:hidden; background:black; }
-  canvas { display:block; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+  }
+
+  canvas {
+    display: block;
+  }
 </style>
 </head>
 
@@ -15,24 +24,34 @@
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
 
+// SCENE
 const scene = new THREE.Scene();
 
+// CAMERA
 const camera = new THREE.PerspectiveCamera(
   45,
   window.innerWidth / window.innerHeight,
   0.1,
   1000
 );
-
 camera.position.z = 3;
 
-const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+// RENDERER
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 0);
+renderer.setClearColor(0x000000, 1);
 document.body.appendChild(renderer.domElement);
 
-// LIGHT
-scene.add(new THREE.AmbientLight(0xffffff, 1));
+// LIGHT (KRİTİK)
+const light = new THREE.DirectionalLight(0xffffff, 1.2);
+light.position.set(5, 3, 5);
+scene.add(light);
+
+// AMBIENT (soft fill)
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
 // EARTH
 const geometry = new THREE.SphereGeometry(1, 64, 64);
@@ -41,19 +60,21 @@ const texture = new THREE.TextureLoader().load(
   "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
 );
 
-const material = new THREE.MeshStandardMaterial({
+// ⚠️ BASIC MATERIAL (siyah ekranı kesin çözer)
+const material = new THREE.MeshBasicMaterial({
   map: texture
 });
 
 const earth = new THREE.Mesh(geometry, material);
 scene.add(earth);
 
-// CONTROLS (DOĞRU YÖNTEM)
+// CONTROLS
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableZoom = true;
+controls.enablePan = false;
 
-// LOOP
-function animate(){
+// ANIMATE LOOP
+function animate() {
   requestAnimationFrame(animate);
 
   earth.rotation.y += 0.002;
@@ -64,7 +85,7 @@ function animate(){
 
 animate();
 
-// resize fix
+// RESIZE FIX
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
