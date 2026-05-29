@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<title>Globe Fix</title>
+<meta charset="utf-8">
+<title>Globe</title>
 <style>
   body { margin:0; overflow:hidden; background:black; }
+  canvas { display:block; }
 </style>
 </head>
 
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+<script type="module">
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
 
-<script>
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -25,7 +26,7 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.z = 3;
 
-const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+const renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
@@ -40,16 +41,18 @@ const texture = new THREE.TextureLoader().load(
   "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
 );
 
-const material = new THREE.MeshBasicMaterial({ map: texture });
+const material = new THREE.MeshStandardMaterial({
+  map: texture
+});
 
 const earth = new THREE.Mesh(geometry, material);
 scene.add(earth);
 
-// CONTROLS
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+// CONTROLS (DOĞRU YÖNTEM)
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableZoom = true;
 
-// ANIMATE
+// LOOP
 function animate(){
   requestAnimationFrame(animate);
 
@@ -60,6 +63,13 @@ function animate(){
 }
 
 animate();
+
+// resize fix
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
 </script>
 
 </body>
