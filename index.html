@@ -1,7 +1,19 @@
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Globe Fix</title>
+<style>
+  body { margin:0; overflow:hidden; background:black; }
+</style>
+</head>
 
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -13,7 +25,7 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.z = 3;
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
@@ -28,17 +40,17 @@ const texture = new THREE.TextureLoader().load(
   "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
 );
 
-const material = new THREE.MeshStandardMaterial({ map: texture });
+const material = new THREE.MeshBasicMaterial({ map: texture });
 
 const earth = new THREE.Mesh(geometry, material);
 scene.add(earth);
 
 // CONTROLS
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableZoom = true;
 
 // ANIMATE
-function animate() {
+function animate(){
   requestAnimationFrame(animate);
 
   earth.rotation.y += 0.002;
@@ -49,3 +61,6 @@ function animate() {
 
 animate();
 </script>
+
+</body>
+</html>
