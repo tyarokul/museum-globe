@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Museum Globe</title>
 
 <style>
@@ -11,7 +11,6 @@
     overflow: hidden;
     background: black;
   }
-
   canvas {
     display: block;
   }
@@ -20,10 +19,11 @@
 
 <body>
 
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+<!-- GLOBAL THREE (MODULE YOK) -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
 
+<script>
 // SCENE
 const scene = new THREE.Scene();
 
@@ -45,12 +45,11 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0x000000, 1);
 document.body.appendChild(renderer.domElement);
 
-// LIGHT (KRİTİK)
+// LIGHT (kritik)
 const light = new THREE.DirectionalLight(0xffffff, 1.2);
 light.position.set(5, 3, 5);
 scene.add(light);
 
-// AMBIENT (soft fill)
 scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
 // EARTH
@@ -60,7 +59,6 @@ const texture = new THREE.TextureLoader().load(
   "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg"
 );
 
-// ⚠️ BASIC MATERIAL (siyah ekranı kesin çözer)
 const material = new THREE.MeshBasicMaterial({
   map: texture
 });
@@ -68,12 +66,12 @@ const material = new THREE.MeshBasicMaterial({
 const earth = new THREE.Mesh(geometry, material);
 scene.add(earth);
 
-// CONTROLS
-const controls = new OrbitControls(camera, renderer.domElement);
+// CONTROLS (DOĞRU GLOBAL YAZIM)
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableZoom = true;
 controls.enablePan = false;
 
-// ANIMATE LOOP
+// LOOP
 function animate() {
   requestAnimationFrame(animate);
 
@@ -85,7 +83,7 @@ function animate() {
 
 animate();
 
-// RESIZE FIX
+// RESIZE
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
